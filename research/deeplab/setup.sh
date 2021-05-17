@@ -34,3 +34,25 @@ tensorboard --logdir=/home/akshit/models/research/deeplab/datasets/pascal_voc_se
 # to view tensorboard results, ref: https://www.montefischer.com/2020/02/20/tensorboard-with-gcp.html
 gcloud compute ssh tf-exp -- -NfL 6006:localhost:6006
 
+# prepare and push photomatte dataset
+mkdir ~/models/research/deeplab/datasets/photo_matte_85
+cd /Users/akshit/repos/tensorflow_models/research/deeplab/data
+zip -r PhotoMatte85.zip ./PhotoMatte
+gcloud compute scp PhotoMatte85.zip tf-exp:~/models/research/deeplab/datasets/photo_matte_85/
+cd ~/models/research/deeplab/datasets/photo_matte_85
+unzip PhotoMatte85.zip
+
+gcloud compute scp datasets/build_photomatte_data.py datasets/convert_photomatte85.sh tf-exp:~/models/research/deeplab/datasets/ 
+# vscode remote development 
+# ref: https://cloud.google.com/sdk/gcloud/reference/compute/config-ssh#--dry-run
+# https://code.visualstudio.com/docs/remote/ssh
+gcloud compute config-ssh
+tf-exp.asia-south1-c.arched-medley-313509
+
+rsync -arvm --include-from=remote_sync_include.conf \
+/Users/akshit/repos/tensorflow_models/research/deeplab \
+tf-exp.asia-south1-c.arched-medley-313509:/home/akshit/models/research
+
+rsync -arvm --include-from=remote_sync_include.conf \
+/Users/akshit/repos/tensorflow_models/research/deeplab \
+tf-exp.asia-south1-c.arched-medley-313509:/home/akshit
