@@ -74,18 +74,18 @@ PASCAL_DATASET="${WORK_DIR}/${DATASET_DIR}/${PASCAL_FOLDER}/tfrecord"
 
 # Train 10 iterations.
 NUM_ITERATIONS=10
-python "${WORK_DIR}"/train.py \
-  --logtostderr \
-  --train_split="trainval" \
-  --model_variant="mobilenet_v2" \
-  --output_stride=16 \
-  --train_crop_size="513,513" \
-  --train_batch_size=4 \
-  --training_number_of_steps="${NUM_ITERATIONS}" \
-  --fine_tune_batch_norm=true \
-  --tf_initial_checkpoint="${INIT_FOLDER}/${CKPT_NAME}/model.ckpt-30000" \
-  --train_logdir="${TRAIN_LOGDIR}" \
-  --dataset_dir="${PASCAL_DATASET}"
+# python "${WORK_DIR}"/train.py \
+#   --logtostderr \
+#   --train_split="trainval" \
+#   --model_variant="mobilenet_v2" \
+#   --output_stride=16 \
+#   --train_crop_size="513,513" \
+#   --train_batch_size=4 \
+#   --training_number_of_steps="${NUM_ITERATIONS}" \
+#   --fine_tune_batch_norm=true \
+#   --tf_initial_checkpoint="${INIT_FOLDER}/${CKPT_NAME}/model.ckpt-30000" \
+#   --train_logdir="${TRAIN_LOGDIR}" \
+#   --dataset_dir="${PASCAL_DATASET}"
 
 # Run evaluation. This performs eval over the full val split (1449 images) and
 # will take a while.
@@ -100,30 +100,30 @@ python "${WORK_DIR}"/eval.py \
   --dataset_dir="${PASCAL_DATASET}" \
   --max_number_of_evaluations=1
 
-# Visualize the results.
-python "${WORK_DIR}"/vis.py \
-  --logtostderr \
-  --vis_split="val" \
-  --model_variant="mobilenet_v2" \
-  --vis_crop_size="513,513" \
-  --checkpoint_dir="${TRAIN_LOGDIR}" \
-  --vis_logdir="${VIS_LOGDIR}" \
-  --dataset_dir="${PASCAL_DATASET}" \
-  --max_number_of_iterations=1
+# # Visualize the results.
+# python "${WORK_DIR}"/vis.py \
+#   --logtostderr \
+#   --vis_split="val" \
+#   --model_variant="mobilenet_v2" \
+#   --vis_crop_size="513,513" \
+#   --checkpoint_dir="${TRAIN_LOGDIR}" \
+#   --vis_logdir="${VIS_LOGDIR}" \
+#   --dataset_dir="${PASCAL_DATASET}" \
+#   --max_number_of_iterations=1
 
-# Export the trained checkpoint.
-CKPT_PATH="${TRAIN_LOGDIR}/model.ckpt-${NUM_ITERATIONS}"
-EXPORT_PATH="${EXPORT_DIR}/frozen_inference_graph.pb"
+# # Export the trained checkpoint.
+# CKPT_PATH="${TRAIN_LOGDIR}/model.ckpt-${NUM_ITERATIONS}"
+# EXPORT_PATH="${EXPORT_DIR}/frozen_inference_graph.pb"
 
-python "${WORK_DIR}"/export_model.py \
-  --logtostderr \
-  --checkpoint_path="${CKPT_PATH}" \
-  --export_path="${EXPORT_PATH}" \
-  --model_variant="mobilenet_v2" \
-  --num_classes=21 \
-  --crop_size=513 \
-  --crop_size=513 \
-  --inference_scales=1.0
+# python "${WORK_DIR}"/export_model.py \
+#   --logtostderr \
+#   --checkpoint_path="${CKPT_PATH}" \
+#   --export_path="${EXPORT_PATH}" \
+#   --model_variant="mobilenet_v2" \
+#   --num_classes=21 \
+#   --crop_size=513 \
+#   --crop_size=513 \
+#   --inference_scales=1.0
 
-# Run inference with the exported checkpoint.
-# Please refer to the provided deeplab_demo.ipynb for an example.
+# # Run inference with the exported checkpoint.
+# # Please refer to the provided deeplab_demo.ipynb for an example.

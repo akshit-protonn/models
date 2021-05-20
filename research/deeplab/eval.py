@@ -28,6 +28,7 @@ from tensorflow.contrib import training as contrib_training
 from deeplab import common
 from deeplab import model
 from deeplab.datasets import data_generator
+import sys
 
 flags = tf.app.flags
 FLAGS = flags.FLAGS
@@ -158,6 +159,10 @@ def main(unused_argv):
     # Define the evaluation metric.
     metric_map = {}
     num_classes = dataset.num_of_classes
+    # unq_preds, _ = tf.unique(predictions)
+    # unq_labels, _ = tf.unique(labels)
+    # predictions = tf.Print(predictions, [unq_preds, unq_labels], message="pred classes and labels")    
+
     metric_map['eval/%s_overall' % predictions_tag] = tf.metrics.mean_iou(
         labels=labels, predictions=predictions, num_classes=num_classes,
         weights=weights)

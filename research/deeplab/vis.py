@@ -267,12 +267,14 @@ def main(unused_argv):
           [1, original_image_shape[0], original_image_shape[1]])
       resized_shape = tf.to_int32([tf.squeeze(samples[common.HEIGHT]),
                                    tf.squeeze(samples[common.WIDTH])])
+      resized_shape = tf.Print(resized_shape,[resized_shape], message='resized shape')
+      # error fix: https://github.com/UofT-EcoSystem/tensorflow/commit/24c75ce5016efb4ab107f27b96aac07549d8617b
       predictions = tf.squeeze(
           tf.image.resize_images(tf.expand_dims(predictions, 3),
                                  resized_shape,
-                                 method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
+                                 method=tf.image.ResizeMethod.BILINEAR,
                                  align_corners=True), 3)
-
+      predictions = tf.cast(predictions, tf.uint8)          
     tf.train.get_or_create_global_step()
     if FLAGS.quantize_delay_step >= 0:
       contrib_quantize.create_eval_graph()

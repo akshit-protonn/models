@@ -265,6 +265,7 @@ def multi_scale_logits(images,
   crop_width = (
       model_options.crop_size[1]
       if model_options.crop_size else tf.shape(images)[2])
+  print('crop width: {}, crop height: {}'.format(crop_width, crop_height))
   if model_options.image_pooling_crop_size:
     image_pooling_crop_height = model_options.image_pooling_crop_size[0]
     image_pooling_crop_width = model_options.image_pooling_crop_size[1]

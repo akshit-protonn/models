@@ -93,6 +93,7 @@ _PASCAL_VOC_SEG_INFORMATION = DatasetDescriptor(
 _PHOTOMATTE_85_INFORMATION = DatasetDescriptor(
     splits_to_sizes={
         'train': 193,
+        'eval': 4,
     },
     num_classes=2,
     ignore_label=255,

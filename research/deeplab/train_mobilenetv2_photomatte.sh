@@ -62,56 +62,59 @@ mkdir -p "${EXPORT_DIR}"
 TF_INIT_ROOT="http://download.tensorflow.org/models"
 CKPT_NAME="deeplabv3_mnv2_pascal_train_aug"
 TF_INIT_CKPT="${CKPT_NAME}_2018_01_29.tar.gz"
-# cd "${INIT_FOLDER}"
-# wget -nd -c "${TF_INIT_ROOT}/${TF_INIT_CKPT}"
-# tar -xf "${TF_INIT_CKPT}"
-# cd "${CURRENT_DIR}"
+cd "${INIT_FOLDER}"
+wget -nd -c "${TF_INIT_ROOT}/${TF_INIT_CKPT}"
+tar -xf "${TF_INIT_CKPT}"
+cd "${CURRENT_DIR}"
 
 PHOTOMATTE_DATASET="${WORK_DIR}/${DATASET_DIR}/${PHOTOMATTE_FOLDER}/tfrecord"
 
-# Train 10 iterations.
-NUM_ITERATIONS=100
-python "${WORK_DIR}"/train.py \
-  --logtostderr \
-  --train_split="train" \
-  --model_variant="mobilenet_v2" \
-  --output_stride=16 \
-  --train_crop_size="513,513" \
-  --log_steps=1 \
-  --train_batch_size=4 \
-  --training_number_of_steps="${NUM_ITERATIONS}" \
-  --fine_tune_batch_norm=true \
-  --train_logdir="${TRAIN_LOGDIR}" \
-  --tf_initial_checkpoint="${INIT_FOLDER}/${CKPT_NAME}/model.ckpt-30000" \
-  --initialize_last_layer=false \
-  --dataset="photo_matte_85" \
-  --dataset_dir="${PHOTOMATTE_DATASET}"
+# train on pretrained ms_coco weights
+NUM_ITERATIONS=1000
+# python "${WORK_DIR}"/train.py \
+#   --logtostderr \
+#   --train_split="train" \
+#   --model_variant="mobilenet_v2" \
+#   --output_stride=16 \
+#   --train_crop_size="513,513" \
+#   --log_steps=10 \
+#   --train_batch_size=4 \
+#   --training_number_of_steps="${NUM_ITERATIONS}" \
+#   --save_summaries_images=true \
+#   --fine_tune_batch_norm=true \
+#   --save_summaries_secs=60 \
+#   --train_logdir="${TRAIN_LOGDIR}" \
+#   --tf_initial_checkpoint="${INIT_FOLDER}/${CKPT_NAME}/model.ckpt-30000" \
+#   --initialize_last_layer=false \
+#   --dataset="photo_matte_85" \
+#   --dataset_dir="${PHOTOMATTE_DATASET}"
 
-
-
-# # Run evaluation. This performs eval over the full val split (1449 images) and
-# # will take a while.
-# # Using the provided checkpoint, one should expect mIOU=75.34%.
 # python "${WORK_DIR}"/eval.py \
 #   --logtostderr \
-#   --eval_split="val" \
+#   --eval_split="train" \
 #   --model_variant="mobilenet_v2" \
 #   --eval_crop_size="513,513" \
 #   --checkpoint_dir="${TRAIN_LOGDIR}" \
 #   --eval_logdir="${EVAL_LOGDIR}" \
-#   --dataset_dir="${PASCAL_DATASET}" \
+#   --dataset="photo_matte_85" \
+#   --min_resize_value=513 \
+#   --max_resize_value=513 \
+#   --dataset_dir="${PHOTOMATTE_DATASET}" \
 #   --max_number_of_evaluations=1
 
-# # Visualize the results.
-# python "${WORK_DIR}"/vis.py \
-#   --logtostderr \
-#   --vis_split="val" \
-#   --model_variant="mobilenet_v2" \
-#   --vis_crop_size="513,513" \
-#   --checkpoint_dir="${TRAIN_LOGDIR}" \
-#   --vis_logdir="${VIS_LOGDIR}" \
-#   --dataset_dir="${PASCAL_DATASET}" \
-#   --max_number_of_iterations=1
+# Visualize the results.
+python "${WORK_DIR}"/vis.py \
+  --logtostderr \
+  --vis_split="train" \
+  --model_variant="mobilenet_v2" \
+  --vis_crop_size="513,513" \
+  --dataset="photo_matte_85" \
+  --min_resize_value=513 \
+  --max_resize_value=513 \
+  --checkpoint_dir="${TRAIN_LOGDIR}" \
+  --vis_logdir="${VIS_LOGDIR}" \
+  --dataset_dir="${PHOTOMATTE_DATASET}" \
+  --max_number_of_iterations=1
 
 # # Export the trained checkpoint.
 # CKPT_PATH="${TRAIN_LOGDIR}/model.ckpt-${NUM_ITERATIONS}"
